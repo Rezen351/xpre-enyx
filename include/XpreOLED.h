@@ -1,6 +1,6 @@
 #pragma once
 #include <Arduino.h>
-#include <U8g2lib.h>
+#include <Adafruit_SH110X.h>
 
 enum class Mood : uint8_t { Auto, Normal, Curious, Happy, Surprised, Love, Sleepy, Wink };
 
@@ -15,8 +15,8 @@ public:
     void dim(bool value);
     void animate(uint32_t now);
 private:
-    // SH1106 has 132 internal columns; U8g2 applies the required 2-column offset.
-    U8G2_SH1106_128X64_NONAME_F_SW_I2C display;
+    // Adafruit SH110X applies the 132-column controller offset for 128 pixels.
+    Adafruit_SH1106G display;
     bool initialized = false;
     Mood mood = Mood::Auto;
     uint32_t lastFrame = 0;

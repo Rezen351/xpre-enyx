@@ -4,7 +4,8 @@
 
 ESP32-C3 Super Mini memakai profil PlatformIO `esp32-c3-devkitm-1`, Arduino,
 USB CDC saat boot, dan Serial 115200. OLED 1,3 inci 128x64 menggunakan
-controller **SH1106** melalui library U8g2 agar offset kolom internalnya benar.
+controller **SH1106** melalui library Adafruit SH110X agar offset kolom
+internalnya benar.
 Sensor lingkungan yang dipilih adalah **DHT11**.
 
 | Modul | Sambungan |
@@ -24,7 +25,7 @@ Tabel menggunakan nomor GPIO, bukan nomor kaki fisik Super Mini.
 
 ## Alur runtime
 
-1. USB Serial, I2C 100 kHz/timeout 25 ms, input encoder, DHT, dan audio dimulai.
+1. USB Serial, I2C 400 kHz/timeout 25 ms, input encoder, DHT, dan audio dimulai.
 2. Pengaturan NVS dibaca dan divalidasi. OLED/MPU dicoba pada alamat alternatif.
 3. BLE advertising aktif; setiap iterasi melayani Serial, BLE queue, input,
    sensor, diagnostik, pemulihan perangkat, dan tampilan.
@@ -43,7 +44,7 @@ Encoder dibaca lewat tabel transisi quadrature, empat transisi per langkah.
 Tombol memiliki debounce 30 ms dan long press 800 ms. Polling dapat kehilangan
 langkah bila encoder diputar sangat cepat selama transfer layar atau DHT.
 
-Renderer OLED menggunakan framebuffer U8g2, animasi mata halus, mood,
+Renderer OLED menggunakan framebuffer Adafruit SH110X, animasi mata halus, mood,
 menu lima halaman, notifikasi lima detik, dan empat pola diagnostik. Target
 frame interval 33 ms; frame rate aktual dipengaruhi perangkat. Setelah idle
 120 detik, layar diredupkan dan mode Auto mengantuk. Interaksi membangunkan

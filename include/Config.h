@@ -5,7 +5,7 @@ constexpr uint8_t sda = 8, scl = 7;
 constexpr uint8_t encoderA = 2, encoderB = 3, button = 4;
 constexpr uint8_t dhtPin = 5, audioPin = 6;
 constexpr uint8_t dhtType = 11; // 11 = DHT11, 22 = DHT22
-constexpr uint32_t i2cClock = 100000, i2cTimeout = 25;
+constexpr uint32_t i2cClock = 400000, i2cTimeout = 25;
 constexpr uint32_t sensorInterval = 2500, retryInterval = 10000;
 constexpr uint32_t idleSleep = 120000;
 constexpr size_t commandSize = 128;
