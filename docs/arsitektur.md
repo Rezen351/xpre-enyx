@@ -63,6 +63,9 @@ ADPCM 4-bit di `include/AutoAudioAsset.h` (sekitar 144 kB untuk satu siklus
 36 detik) dan diputar melalui task nonblocking. Titik mulai audio mengikuti
 fase animasi OLED, jadi urutan ekspresi dan ketukan tetap selaras. Perintah
 `audio auto` memulai siklus dari fase saat ini dan `audio stop` menghentikannya.
+Ketika `Mood::Auto` berubah karena akselerometer atau idle, pemutar berpindah
+langsung ke segmen mood terkait dan mengulang segmen tersebut sampai mood
+berubah lagi. Mood manual juga memakai segmen audio ekspresinya sendiri.
 Mute dihormati termasuk pada pengujian audio.
 
 ## Sensor dan pengaturan

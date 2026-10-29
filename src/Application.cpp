@@ -22,6 +22,7 @@ Mood selectedMood=Mood::Auto;
 float sensitivity=2.0f;
 uint32_t lastProbe=0,lastReport=0,lastUi=0,lastActivity=0,notificationAt=0;
 bool notificationActive=false;
+Mood lastAudioMood=Mood::Auto;
 char notification[97]="No notifications";
 const char* moodNames[]={"auto","normal","curious","happy","surprised","love","sleepy","wink"};
 const char* menuNames[]={"Face","Emotion","Sensors","Notifications","Sound"};
@@ -80,10 +81,10 @@ void command(const char* input) {
     } else if (!strcmp(start,"mood")) {
         bool found=false;
         for (uint8_t i=0;i<8;++i) if(!strcmp(arg,moodNames[i])) { selectedMood=static_cast<Mood>(i);found=true;break; }
-        if (found) { if (selectedMood==Mood::Auto) hw.startAutoAudio(millis()%36000UL); else hw.stopAudio(); save(); Serial.printf("Mood %s\n",arg); }
+        if (found) { if (selectedMood==Mood::Auto) hw.startAutoAudio(millis()%36000UL); else hw.startMoodAudio(static_cast<uint8_t>(selectedMood)); lastAudioMood=selectedMood; save(); Serial.printf("Mood %s\n",arg); }
         else Serial.println("ERR invalid mood; type help");
     } else if (!strcmp(start,"sound") && (!strcmp(arg,"on")||!strcmp(arg,"off"))) {
-        hw.sound=!strcmp(arg,"on"); if (!hw.sound) hw.stopAudio(); else if (selectedMood==Mood::Auto) hw.startAutoAudio(millis()%36000UL); save();
+        hw.sound=!strcmp(arg,"on"); if (!hw.sound) hw.stopAudio(); else if (selectedMood==Mood::Auto) hw.startAutoAudio(millis()%36000UL); else hw.startMoodAudio(static_cast<uint8_t>(selectedMood)); lastAudioMood=selectedMood; save();
         Serial.printf("Sound %s\n",hw.sound?"ON":"OFF");
     } else if (!strcmp(start,"audio") && (!strcmp(arg,"auto")||!strcmp(arg,"stop"))) {
         if (!strcmp(arg,"auto")) hw.startAutoAudio(millis()%36000UL); else hw.stopAudio();
@@ -144,6 +145,11 @@ void drawUi(uint32_t now) {
             else if(hw.mpuReady && hw.motion>sensitivity*2) mood=Mood::Surprised;
             else if(hw.mpuReady && hw.motion>sensitivity) mood=Mood::Happy;
         }
+        if (hw.sound && mood != lastAudioMood) {
+            if (mood == Mood::Auto) hw.startAutoAudio(now % 36000UL);
+            else hw.startMoodAudio(static_cast<uint8_t>(mood));
+            lastAudioMood = mood;
+        }
         oled.setMood(mood);oled.animate(now);
     }
 }
@@ -191,7 +197,7 @@ void appLoop() {
                 selection=((int(selection)+steps)%count+count)%count;
                 if(click) {
                     hw.beep();
-                    if(selectingMood) { selectedMood=static_cast<Mood>(selection); if(selectedMood==Mood::Auto) hw.startAutoAudio(millis()%36000UL); else hw.stopAudio(); save();selectingMood=false;selection=1; }
+                    if(selectingMood) { selectedMood=static_cast<Mood>(selection); if(selectedMood==Mood::Auto) hw.startAutoAudio(millis()%36000UL); else hw.startMoodAudio(static_cast<uint8_t>(selectedMood)); lastAudioMood=selectedMood; save();selectingMood=false;selection=1; }
                     else if(selection==0)menu=false;
                     else if(selection==1){selectingMood=true;selection=static_cast<uint8_t>(selectedMood);}
                     else if(selection==2)hw.calibrate();

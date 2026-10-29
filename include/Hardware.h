@@ -12,6 +12,7 @@ public:
     void report();
     void beep(uint16_t hz = 1200, uint16_t duration = 70);
     void startAutoAudio(uint32_t phaseMs);
+    void startMoodAudio(uint8_t mood);
     void stopAudio();
     bool audioActive() const { return autoAudio.active(); }
     void calibrate();

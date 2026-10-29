@@ -92,6 +92,17 @@ void Hardware::startAutoAudio(uint32_t phaseMs) {
     audioUntil = 0;
     autoAudio.startAuto(phaseMs);
 }
+void Hardware::startMoodAudio(uint8_t mood) {
+    if (!sound) return;
+    static const uint32_t starts[] = {0, 0, 6000, 11000, 16000, 20000, 25000, 31000};
+    static const uint32_t lengths[] = {36000, 6000, 5000, 5000, 4000, 5000, 6000, 5000};
+    if (mood >= 8 || mood == 0) {
+        startAutoAudio(millis() % 36000UL);
+        return;
+    }
+    audioUntil = 0;
+    autoAudio.startSegment(starts[mood], lengths[mood]);
+}
 void Hardware::stopAudio() {
     autoAudio.stop();
     ledcWriteTone(0, 0);

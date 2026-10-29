@@ -25,7 +25,20 @@ void AudioPlayer::begin(uint8_t outputChannel) {
     if (!task) xTaskCreate(taskEntry, "xpre_audio", 4096, this, 1, &task);
 }
 void AudioPlayer::startAuto(uint32_t phaseMs) {
-    requestedPhaseMs = phaseMs % 36000UL;
+    requestedStartMs = phaseMs % 36000UL;
+    requestedEndMs = 36000UL;
+    loopStartMs = 0;
+    decoderReset = true;
+    playing = true;
+    ledcSetup(channel, 31250, 8);
+    ledcWrite(channel, 128);
+}
+void AudioPlayer::startSegment(uint32_t startMs, uint32_t durationMs) {
+    const uint32_t start = min<uint32_t>(startMs, 35999UL);
+    const uint32_t end = min<uint32_t>(start + max<uint32_t>(durationMs, 1UL), 36000UL);
+    requestedStartMs = start;
+    requestedEndMs = end;
+    loopStartMs = start;
     decoderReset = true;
     playing = true;
     ledcSetup(channel, 31250, 8);
@@ -67,9 +80,16 @@ void AudioPlayer::run() {
     for (;;) {
         if (!playing) { vTaskDelay(1); continue; }
         if (decoderReset) {
-            const uint32_t phase = requestedPhaseMs;
+            const uint32_t phase = requestedStartMs;
+            const uint32_t end = requestedEndMs;
+            const uint32_t loop = loopStartMs;
             decoderReset = false;
+            segmentEndSample = (end * AutoAudio::sampleRate) / 1000UL;
+            segmentLoopSample = (loop * AutoAudio::sampleRate) / 1000UL;
             resetDecoder(phase);
+        }
+        if (sampleIndex >= segmentEndSample) {
+            resetDecoder((segmentLoopSample * 1000UL) / AutoAudio::sampleRate);
         }
         const int16_t sample = nextSample();
         ledcWrite(channel, static_cast<uint8_t>((static_cast<int32_t>(sample) + 32768) >> 8));

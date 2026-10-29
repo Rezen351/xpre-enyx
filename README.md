@@ -60,6 +60,8 @@ karakter.
 Karakter dapat berkedip, melirik, tersenyum, terkejut, mengantuk, dan
 menampilkan pesan. Pada `mood auto`, suara karakter mengikuti urutan animasi
 OLED: normal, penasaran, senang, terkejut, cinta, tidur, lalu kedipan.
+Jika MPU mendeteksi gerakan, pemutar langsung berpindah ke segmen suara
+`happy` atau `surprised`; saat idle, segmen `sleepy` diputar berulang.
 Audio disimpan di firmware sebagai IMA ADPCM 4-bit sehingga file sumber tidak
 perlu dibaca dari filesystem.
 
