@@ -8,12 +8,13 @@ void Diagnostics::stop() {
 void Diagnostics::start(const char* requested) {
     if (strcmp(requested,"stop")==0) { stop(); return; }
     if (strcmp(requested,"all") && strcmp(requested,"oled") && strcmp(requested,"audio") &&
-        strcmp(requested,"encoder") && strcmp(requested,"i2c") && strcmp(requested,"mpu") && strcmp(requested,"dht")) {
-        Serial.println("ERR test target: all|oled|mpu|dht|audio|encoder|i2c|stop"); return;
+        strcmp(requested,"encoder") && strcmp(requested,"touch") && strcmp(requested,"i2c") && strcmp(requested,"mpu") && strcmp(requested,"dht")) {
+        Serial.println("ERR test target: all|oled|mpu|dht|audio|encoder|touch|i2c|stop"); return;
     }
     strlcpy(target,requested,sizeof(target));
     running=true; all=strcmp(target,"all")==0; stage=0; address=1; stageAt=millis();
     startPosition=hw.encoderPosition; startClicks=hw.clicks;
+    startTouchEvents=hw.touchEvents;
     Serial.printf("TEST START %s | SDA=%u SCL=%u | levels SDA=%d SCL=%d\n",target,Config::sda,Config::scl,digitalRead(Config::sda),digitalRead(Config::scl));
     if (strcmp(target,"i2c")==0) { Serial.println("Scanning one address per loop..."); return; }
     // Explicit tests retry devices immediately, independent of background recovery.
@@ -30,6 +31,7 @@ void Diagnostics::start(const char* requested) {
     }
     if (strcmp(target,"audio")==0) { hw.beep(880,200); Serial.println("Audio 880/1320 Hz; verify by listening. Muted setting is respected."); }
     if (strcmp(target,"encoder")==0) Serial.println("Rotate encoder and press/release button during the next 10 seconds.");
+    if (strcmp(target,"touch")==0) Serial.printf("Touch test on GPIO%u; touch the sensor during the next 10 seconds.\n", Config::touchPin);
 }
 void Diagnostics::update(uint32_t now) {
     if (!running) return;
@@ -60,6 +62,10 @@ void Diagnostics::update(uint32_t now) {
     } else if (strcmp(target,"encoder")==0) {
         if (elapsed>=10000) {
             Serial.printf("TEST END encoder: delta=%ld clicks=%lu\n",long(hw.encoderPosition-startPosition),static_cast<unsigned long>(hw.clicks-startClicks)); running=false;
+        }
+    } else if (strcmp(target,"touch")==0) {
+        if (elapsed>=10000) {
+            Serial.printf("TEST END touch: events=%lu final=%s\n",static_cast<unsigned long>(hw.touchEvents-startTouchEvents),hw.touchActive?"TOUCHED":"released"); running=false;
         }
     } else if (strcmp(target,"audio")==0) {
         if (stage==0 && elapsed>=400) { hw.beep(1320,200); stage=1; }

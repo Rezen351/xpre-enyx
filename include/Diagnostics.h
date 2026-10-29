@@ -17,5 +17,6 @@ private:
     uint32_t stageAt=0;
     int32_t startPosition=0;
     uint32_t startClicks=0;
+    uint32_t startTouchEvents=0;
     char target[12]{};
 };

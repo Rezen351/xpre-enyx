@@ -14,6 +14,7 @@ Sensor lingkungan yang dipilih adalah **DHT11**.
 | MPU6050 | VCC 3.3V, GND, SDA GPIO8, SCL GPIO7; AD0 LOW=0x68/HIGH=0x69 |
 | DHT11 | VCC 3.3V, GND, DATA GPIO5; pull-up DATA bila modul belum memilikinya |
 | Encoder | CLK GPIO2, DT GPIO3, SW GPIO4, common/GND ke GND; input pull-up aktif |
+| Sensor touch digital | OUT GPIO10, VCC 3.3V, GND; aktif HIGH |
 | Amplifier | Input sinyal PWM GPIO6 dan GND bersama; supply mengikuti modul amplifier |
 | Speaker | Output amplifier; tidak langsung digerakkan dari GPIO6 |
 
@@ -25,7 +26,7 @@ Tabel menggunakan nomor GPIO, bukan nomor kaki fisik Super Mini.
 
 ## Alur runtime
 
-1. USB Serial, I2C 400 kHz/timeout 25 ms, input encoder, DHT, dan audio dimulai.
+1. USB Serial, I2C 400 kHz/timeout 25 ms, input encoder, touch, DHT, dan audio dimulai.
 2. Pengaturan NVS dibaca dan divalidasi. OLED/MPU dicoba pada alamat alternatif.
 3. BLE advertising aktif; setiap iterasi melayani Serial, BLE queue, input,
    sensor, diagnostik, pemulihan perangkat, dan tampilan.
@@ -43,6 +44,11 @@ Tidak ada klaim bahwa ACK mengidentifikasi chip atau membuktikan panel sehat.
 Encoder dibaca lewat tabel transisi quadrature, empat transisi per langkah.
 Tombol memiliki debounce 30 ms dan long press 800 ms. Polling dapat kehilangan
 langkah bila encoder diputar sangat cepat selama transfer layar atau DHT.
+
+Sensor touch digital dibaca pada GPIO10 dengan debounce 30 ms. Sentuhan baru
+membuka menu, membangunkan karakter, dan menghasilkan bunyi singkat. Sensor
+TTP223 dengan keluaran aktif HIGH sesuai konfigurasi; sensor aktif LOW perlu
+mengubah `Config::touchActiveHigh`.
 
 Renderer OLED menggunakan framebuffer Adafruit SH110X, animasi mata halus, mood,
 menu lima halaman, notifikasi lima detik, dan empat pola diagnostik. Target

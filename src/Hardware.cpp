@@ -6,7 +6,9 @@ void Hardware::begin() {
     pinMode(Config::encoderA, INPUT_PULLUP);
     pinMode(Config::encoderB, INPUT_PULLUP);
     pinMode(Config::button, INPUT_PULLUP);
+    pinMode(Config::touchPin, INPUT_PULLDOWN);
     previousAB = (digitalRead(Config::encoderA) << 1) | digitalRead(Config::encoderB);
+    rawTouch = stableTouch = Config::touchActiveHigh ? digitalRead(Config::touchPin) : !digitalRead(Config::touchPin);
     dht.begin();
     ledcSetup(0, 2000, 8);
     ledcAttachPin(Config::audioPin, 0);
@@ -49,6 +51,13 @@ void Hardware::update(uint32_t now) {
     if (!stableButton && !held && now - pressedAt >= 800) {
         hold = true; held = true;
     }
+    bool rawTouchState = Config::touchActiveHigh ? digitalRead(Config::touchPin) : !digitalRead(Config::touchPin);
+    if (rawTouchState != rawTouch) { rawTouch = rawTouchState; touchChanged = now; }
+    if (now - touchChanged >= 30 && stableTouch != rawTouch) {
+        stableTouch = rawTouch;
+        touchActive = stableTouch;
+        if (stableTouch) { touchEvent = true; ++touchEvents; }
+    }
     if (now - lastDht >= Config::sensorInterval) {
         lastDht = now;
         temperature = dht.readTemperature();
@@ -86,11 +95,13 @@ void Hardware::calibrate() {
 int Hardware::takeSteps() { int value=steps; steps=0; return value; }
 bool Hardware::takeClick() { bool value=click; click=false; return value; }
 bool Hardware::takeHold() { bool value=hold; hold=false; return value; }
+bool Hardware::takeTouch() { bool value=touchEvent; touchEvent=false; return value; }
 void Hardware::report() {
     Serial.printf("MPU6050: %s address=0x%02X motion=%.2f m/s2\n", mpuReady?"READY":"UNAVAILABLE", mpuAddress, motion);
     if (mpuReady) Serial.printf("  accel=%.2f,%.2f,%.2f m/s2 gyro=%.2f,%.2f,%.2f rad/s\n",ax,ay,az,gyroX,gyroY,gyroZ);
     if (dhtReady) Serial.printf("DHT%u: %.1f C / %.1f %%RH\n",Config::dhtType,temperature,humidity);
     else Serial.printf("DHT%u: NO VALID READING (GPIO%u)\n",Config::dhtType,Config::dhtPin);
     Serial.printf("Encoder: position=%ld clicks=%lu button=%s (manual verification required)\n",long(encoderPosition),static_cast<unsigned long>(clicks),digitalRead(Config::button)?"UP":"DOWN");
+    Serial.printf("Touch GPIO%u: %s events=%lu\n",Config::touchPin,touchActive?"TOUCHED":"released",static_cast<unsigned long>(touchEvents));
     Serial.printf("Audio GPIO%u: %s (sound must be checked by listening)\n",Config::audioPin,sound?"ON":"MUTED");
 }

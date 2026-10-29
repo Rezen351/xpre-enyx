@@ -49,7 +49,7 @@ void status() {
 }
 void help() {
     Serial.println("Xpre-Enyx commands (115200 baud; Enter/LF/CRLF):");
-    Serial.println("help | status | stream on/off | test [all|oled|mpu|dht|audio|encoder|i2c|stop]");
+    Serial.println("help | status | stream on/off | test [all|oled|mpu|dht|audio|encoder|touch|i2c|stop]");
     Serial.println("mood auto|normal|curious|happy|surprised|love|sleepy|wink");
     Serial.println("notify <text> | sound on/off | beep | calibrate | sensitivity 0.5..8");
     Serial.println("retry | menu | face | sleep | reboot");
@@ -176,9 +176,10 @@ void appLoop() {
     if (selectedMood == Mood::Auto && hw.mpuReady && hw.motion >= sensitivity) {
         activity();
     }
-    int steps=hw.takeSteps();bool click=hw.takeClick(),hold=hw.takeHold();
-    if(steps || click || hold) {
+    int steps=hw.takeSteps();bool click=hw.takeClick(),hold=hw.takeHold(),touch=hw.takeTouch();
+    if(steps || click || hold || touch) {
         activity();
+        if (touch && !diagnostics.active()) { menu=true; selectingMood=false; selection=0; hw.beep(); }
         if(!diagnostics.active()) {
             if(hold) { menu=!menu; selectingMood=false;selection=0; }
             else if(menu) {
@@ -194,7 +195,7 @@ void appLoop() {
                 }
             } else if(click) {menu=true;selection=0;}
         }
-        Serial.printf("INPUT position=%ld clicks=%lu\n",long(hw.encoderPosition),static_cast<unsigned long>(hw.clicks));
+        Serial.printf("INPUT position=%ld clicks=%lu touch=%s\n",long(hw.encoderPosition),static_cast<unsigned long>(hw.clicks),touch?"yes":"no");
     }
     now=millis();
     diagnostics.update(now);

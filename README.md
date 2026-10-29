@@ -36,6 +36,7 @@ Perintah yang tersedia:
 | `test dht` | Menguji sensor suhu |
 | `test audio` | Menguji suara |
 | `test encoder` | Menguji encoder dan tombol |
+| `test touch` | Menguji sensor touch |
 | `test i2c` | Memeriksa perangkat yang terhubung |
 | `test stop` | Menghentikan pengujian |
 | `retry` | Mengulangi pemeriksaan perangkat |
@@ -52,7 +53,8 @@ Perintah yang tersedia:
 
 Klik tombol encoder untuk membuka menu. Putar encoder untuk memilih pilihan,
 lalu klik untuk menjalankannya. Tekan dan tahan tombol untuk kembali ke
-tampilan karakter.
+tampilan karakter. Sentuh sensor touch untuk membuka menu dan membangunkan
+karakter.
 
 Karakter dapat berkedip, melirik, tersenyum, terkejut, mengantuk, dan
 menampilkan pesan. Pengaturan ekspresi dan suara disimpan otomatis.
