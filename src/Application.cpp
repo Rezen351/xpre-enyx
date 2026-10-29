@@ -34,10 +34,12 @@ void save() {
 }
 void activity() { lastActivity=millis(); if (dimmed && oledReady) oled.dim(false); dimmed=false; }
 void probeOLED() {
+    Serial.println("OLED: probing address");
     if (!i2cDetected(oledAddress)) {
         if (i2cDetected(0x3C)) oledAddress=0x3C;
         else if (i2cDetected(0x3D)) oledAddress=0x3D;
     }
+    Serial.printf("OLED: probe result 0x%02X\n", oledAddress);
     oledReady=oled.begin();
 }
 void status() {
@@ -145,15 +147,22 @@ void drawUi(uint32_t now) {
 }
 void appSetup() {
     Serial.begin(115200);
+    Serial.println("BOOT: serial ready");
     Wire.begin(Config::sda,Config::scl,Config::i2cClock);
     Wire.setTimeOut(Config::i2cTimeout);
+    Serial.println("BOOT: I2C ready");
     settingsReady=settings.begin("xpre-enyx",false);
     uint8_t stored=settingsReady?settings.getUChar("mood",0):0;
     selectedMood=static_cast<Mood>(stored<8?stored:0);
     hw.sound=settingsReady?settings.getBool("sound",true):true;
     sensitivity=settingsReady?settings.getFloat("sensitivity",2):2;
     if(!isfinite(sensitivity)||sensitivity<0.5||sensitivity>8)sensitivity=2;
-    hw.begin();probeOLED();BleLink::begin();
+    Serial.println("BOOT: hardware init");
+    hw.begin();
+    Serial.println("BOOT: hardware done");
+    probeOLED();
+    Serial.printf("BOOT: OLED init %s\n", oledReady ? "done" : "unavailable");
+    BleLink::begin();
     lastActivity=millis();lastProbe=millis();
     help();status();
 }

@@ -3,12 +3,13 @@
 ## Platform
 
 ESP32-C3 Super Mini memakai profil PlatformIO `esp32-c3-devkitm-1`, Arduino,
-USB CDC saat boot, dan Serial 115200. OLED diasumsikan SSD1306 128x64,
-bukan SH1106. Sensor lingkungan yang dipilih adalah **DHT11**.
+USB CDC saat boot, dan Serial 115200. OLED 1,3 inci 128x64 menggunakan
+controller **SH1106** melalui library U8g2 agar offset kolom internalnya benar.
+Sensor lingkungan yang dipilih adalah **DHT11**.
 
 | Modul | Sambungan |
 |---|---|
-| OLED | VCC 3.3V, GND, SDA GPIO8, SCL GPIO7 |
+| OLED SH1106 128x64 | VCC 3.3V, GND, SDA GPIO8, SCL GPIO7 |
 | MPU6050 | VCC 3.3V, GND, SDA GPIO8, SCL GPIO7; AD0 LOW=0x68/HIGH=0x69 |
 | DHT11 | VCC 3.3V, GND, DATA GPIO5; pull-up DATA bila modul belum memilikinya |
 | Encoder | CLK GPIO2, DT GPIO3, SW GPIO4, common/GND ke GND; input pull-up aktif |
@@ -42,7 +43,7 @@ Encoder dibaca lewat tabel transisi quadrature, empat transisi per langkah.
 Tombol memiliki debounce 30 ms dan long press 800 ms. Polling dapat kehilangan
 langkah bila encoder diputar sangat cepat selama transfer layar atau DHT.
 
-Renderer OLED menggunakan framebuffer 1024 byte, animasi mata halus, mood,
+Renderer OLED menggunakan framebuffer U8g2, animasi mata halus, mood,
 menu lima halaman, notifikasi lima detik, dan empat pola diagnostik. Target
 frame interval 33 ms; frame rate aktual dipengaruhi perangkat. Setelah idle
 120 detik, layar diredupkan dan mode Auto mengantuk. Interaksi membangunkan
