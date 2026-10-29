@@ -172,6 +172,10 @@ void appLoop() {
     char message[97];if(BleLink::takeMessage(message,sizeof(message))) notify(message);
     uint32_t now=millis();
     hw.update(now);
+    // Motion is also user activity: wake the automatic sleepy state.
+    if (selectedMood == Mood::Auto && hw.mpuReady && hw.motion >= sensitivity) {
+        activity();
+    }
     int steps=hw.takeSteps();bool click=hw.takeClick(),hold=hw.takeHold();
     if(steps || click || hold) {
         activity();
