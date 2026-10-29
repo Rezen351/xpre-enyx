@@ -7,6 +7,7 @@ XpreOLED::XpreOLED()
     : display(U8G2_R0, Config::scl, Config::sda, U8X8_PIN_NONE) {}
 
 bool XpreOLED::begin() {
+    if (initialized) return true;
     if (!i2cDetected(oledAddress)) return false;
 
     // U8g2 expects the 8-bit I2C address (7-bit address shifted left).
@@ -16,6 +17,7 @@ bool XpreOLED::begin() {
     display.setPowerSave(0);
     display.clearBuffer();
     display.sendBuffer();
+    initialized = true;
     return true;
 }
 

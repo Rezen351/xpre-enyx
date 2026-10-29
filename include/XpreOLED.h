@@ -17,6 +17,7 @@ public:
 private:
     // SH1106 has 132 internal columns; U8g2 applies the required 2-column offset.
     U8G2_SH1106_128X64_NONAME_F_SW_I2C display;
+    bool initialized = false;
     Mood mood = Mood::Auto;
     uint32_t lastFrame = 0;
     uint32_t nextBlink = 2000;

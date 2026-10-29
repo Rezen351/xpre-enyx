@@ -196,8 +196,7 @@ void appLoop() {
     diagnostics.update(now);
     if(!diagnostics.active() && now-lastProbe>=Config::retryInterval) {
         lastProbe=now;
-        if(oledReady)oledReady=i2cDetected(oledAddress);
-        if(!oledReady)probeOLED();
+        if(!oledReady) probeOLED();
         if(!hw.mpuReady)hw.probe();
     }
     if(!dimmed && now-lastActivity>=Config::idleSleep) {dimmed=true;if(oledReady)oled.dim(true);}
