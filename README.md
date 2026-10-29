@@ -45,6 +45,7 @@ Perintah yang tersedia:
 | `mood sleepy` | Memilih ekspresi mengantuk |
 | `notify Halo!` | Menampilkan pesan |
 | `sound on` / `sound off` | Mengaktifkan atau mematikan suara |
+| `audio auto` / `audio stop` | Menjalankan atau menghentikan suara karakter 36 detik |
 | `beep` | Memutar bunyi singkat |
 | `menu` / `face` | Membuka menu atau kembali ke karakter |
 | `reboot` | Menyalakan ulang board |
@@ -57,7 +58,10 @@ tampilan karakter. Sentuh sensor touch untuk membuka menu dan membangunkan
 karakter.
 
 Karakter dapat berkedip, melirik, tersenyum, terkejut, mengantuk, dan
-menampilkan pesan. Pengaturan ekspresi dan suara disimpan otomatis.
+menampilkan pesan. Pada `mood auto`, suara karakter mengikuti urutan animasi
+OLED: normal, penasaran, senang, terkejut, cinta, tidur, lalu kedipan.
+Audio disimpan di firmware sebagai IMA ADPCM 4-bit sehingga file sumber tidak
+perlu dibaca dari filesystem.
 
 ## BLE
 

@@ -58,7 +58,12 @@ mode idle. `sleep` merupakan deep sleep eksplisit; GPIO4 LOW atau RESET
 membangunkan board, sedangkan BLE tidak aktif saat deep sleep.
 
 Audio memakai LEDC channel 0 pada GPIO6, dengan deadline untuk menghentikan
-nada tanpa delay panjang. Mute dihormati termasuk pada pengujian audio.
+nada tanpa delay panjang. Suara karakter otomatis dikompresi mono 8 kHz IMA
+ADPCM 4-bit di `include/AutoAudioAsset.h` (sekitar 144 kB untuk satu siklus
+36 detik) dan diputar melalui task nonblocking. Titik mulai audio mengikuti
+fase animasi OLED, jadi urutan ekspresi dan ketukan tetap selaras. Perintah
+`audio auto` memulai siklus dari fase saat ini dan `audio stop` menghentikannya.
+Mute dihormati termasuk pada pengujian audio.
 
 ## Sensor dan pengaturan
 

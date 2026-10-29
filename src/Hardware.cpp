@@ -10,9 +10,10 @@ void Hardware::begin() {
     previousAB = (digitalRead(Config::encoderA) << 1) | digitalRead(Config::encoderB);
     rawTouch = stableTouch = Config::touchActiveHigh ? digitalRead(Config::touchPin) : !digitalRead(Config::touchPin);
     dht.begin();
-    ledcSetup(0, 2000, 8);
+    ledcSetup(0, 31250, 8);
     ledcAttachPin(Config::audioPin, 0);
     ledcWrite(0, 0);
+    autoAudio.begin(0);
     probe();
 }
 void Hardware::probe() {
@@ -82,8 +83,19 @@ void Hardware::update(uint32_t now) {
 }
 void Hardware::beep(uint16_t hz, uint16_t duration) {
     if (!sound) return;
+    autoAudio.stop();
     ledcWriteTone(0, hz);
     audioUntil = millis() + duration;
+}
+void Hardware::startAutoAudio(uint32_t phaseMs) {
+    if (!sound) return;
+    audioUntil = 0;
+    autoAudio.startAuto(phaseMs);
+}
+void Hardware::stopAudio() {
+    autoAudio.stop();
+    ledcWriteTone(0, 0);
+    audioUntil = 0;
 }
 void Hardware::calibrate() {
     if (!mpuReady) { Serial.println("MPU unavailable; calibration skipped."); return; }

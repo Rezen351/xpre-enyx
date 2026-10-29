@@ -3,6 +3,7 @@
 #include <Adafruit_MPU6050.h>
 #include <DHT.h>
 #include "Config.h"
+#include "AudioPlayer.h"
 class Hardware {
 public:
     void begin();
@@ -10,6 +11,9 @@ public:
     void probe();
     void report();
     void beep(uint16_t hz = 1200, uint16_t duration = 70);
+    void startAutoAudio(uint32_t phaseMs);
+    void stopAudio();
+    bool audioActive() const { return autoAudio.active(); }
     void calibrate();
     int takeSteps();
     bool takeClick();
@@ -26,6 +30,7 @@ public:
 private:
     Adafruit_MPU6050 mpu;
     DHT dht{Config::dhtPin, Config::dhtType};
+    AudioPlayer autoAudio;
     uint32_t lastDht = 0, lastMpu = 0, buttonChanged = 0, pressedAt = 0, audioUntil = 0, touchChanged = 0;
     uint8_t previousAB = 0;
     int quarterSteps = 0, steps = 0;

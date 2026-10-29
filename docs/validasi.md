@@ -7,9 +7,10 @@ teridentifikasi ESP32-C3 revisi 0.4, flash 4 MB, USB Serial/JTAG.
 
 Build release PlatformIO berhasil, lalu firmware di-upload melalui esptool
 dan hash flash diverifikasi. Profil board `esp32-c3-devkitm-1`, platform
-Espressif32 7.1.3, Arduino ESP32 2.0.17. Integrasi BLE tetap muat pada
-partisi aplikasi default: sekitar 81% flash dan 12.1% RAM statis.
-Heap runtime saat pemeriksaan awal sekitar 193 KB; angka berubah saat BLE
+Espressif32 7.1.3, Arduino ESP32 2.0.17. Integrasi BLE dan aset audio
+terkompresi tetap muat pada partisi aplikasi default: sekitar 92% flash dan
+12.1% RAM statis. Heap runtime saat pemeriksaan awal sekitar 188 KB; angka
+berubah saat BLE
 terhubung dan bukan pengukuran kebocoran memori jangka panjang.
 
 ## Pengujian langsung

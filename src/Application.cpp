@@ -51,7 +51,7 @@ void help() {
     Serial.println("Xpre-Enyx commands (115200 baud; Enter/LF/CRLF):");
     Serial.println("help | status | stream on/off | test [all|oled|mpu|dht|audio|encoder|touch|i2c|stop]");
     Serial.println("mood auto|normal|curious|happy|surprised|love|sleepy|wink");
-    Serial.println("notify <text> | sound on/off | beep | calibrate | sensitivity 0.5..8");
+    Serial.println("notify <text> | sound on/off | audio auto/stop | beep | calibrate | sensitivity 0.5..8");
     Serial.println("retry | menu | face | sleep | reboot");
     Serial.println("test: interactive diagnostic ~14 seconds; test stop cancels. Missing hardware never stops the app.");
 }
@@ -80,11 +80,14 @@ void command(const char* input) {
     } else if (!strcmp(start,"mood")) {
         bool found=false;
         for (uint8_t i=0;i<8;++i) if(!strcmp(arg,moodNames[i])) { selectedMood=static_cast<Mood>(i);found=true;break; }
-        if (found) { save(); Serial.printf("Mood %s\n",arg); }
+        if (found) { if (selectedMood==Mood::Auto) hw.startAutoAudio(millis()%36000UL); else hw.stopAudio(); save(); Serial.printf("Mood %s\n",arg); }
         else Serial.println("ERR invalid mood; type help");
     } else if (!strcmp(start,"sound") && (!strcmp(arg,"on")||!strcmp(arg,"off"))) {
-        hw.sound=!strcmp(arg,"on"); if (!hw.sound) ledcWriteTone(0,0); save();
+        hw.sound=!strcmp(arg,"on"); if (!hw.sound) hw.stopAudio(); else if (selectedMood==Mood::Auto) hw.startAutoAudio(millis()%36000UL); save();
         Serial.printf("Sound %s\n",hw.sound?"ON":"OFF");
+    } else if (!strcmp(start,"audio") && (!strcmp(arg,"auto")||!strcmp(arg,"stop"))) {
+        if (!strcmp(arg,"auto")) hw.startAutoAudio(millis()%36000UL); else hw.stopAudio();
+        Serial.printf("Auto audio %s\n",!strcmp(arg,"auto")?"STARTED":"STOPPED");
     } else if (!strcmp(start,"beep")) { hw.beep(); Serial.println("Beep requested; verify by listening (respects mute)."); }
     else if (!strcmp(start,"notify") && *arg) notify(arg);
     else if (!strcmp(start,"calibrate")) hw.calibrate();
@@ -159,6 +162,7 @@ void appSetup() {
     if(!isfinite(sensitivity)||sensitivity<0.5||sensitivity>8)sensitivity=2;
     Serial.println("BOOT: hardware init");
     hw.begin();
+    if (selectedMood == Mood::Auto) hw.startAutoAudio(0);
     Serial.println("BOOT: hardware done");
     probeOLED();
     Serial.printf("BOOT: OLED init %s\n", oledReady ? "done" : "unavailable");
@@ -187,7 +191,7 @@ void appLoop() {
                 selection=((int(selection)+steps)%count+count)%count;
                 if(click) {
                     hw.beep();
-                    if(selectingMood) { selectedMood=static_cast<Mood>(selection);save();selectingMood=false;selection=1; }
+                    if(selectingMood) { selectedMood=static_cast<Mood>(selection); if(selectedMood==Mood::Auto) hw.startAutoAudio(millis()%36000UL); else hw.stopAudio(); save();selectingMood=false;selection=1; }
                     else if(selection==0)menu=false;
                     else if(selection==1){selectingMood=true;selection=static_cast<uint8_t>(selectedMood);}
                     else if(selection==2)hw.calibrate();
