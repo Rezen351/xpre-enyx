@@ -1,0 +1,27 @@
+[
+  {
+    "name": "I2C scan finishes",
+    "passed": true,
+    "response": "TEST START i2c | SDA=8 SCL=7 | levels SDA=1 SCL=1\nScanning one address per loop...\r\nTEST END i2c\r\n"
+  },
+  {
+    "name": "retry returns to console",
+    "passed": true,
+    "response": "Xpre-Enyx uptime=141 s heap=192216 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=ADVERTISING | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n"
+  },
+  {
+    "name": "settings commands",
+    "passed": true,
+    "response": "Mood curious\nSound OFF\nSensitivity 3.0 m/s2\n"
+  },
+  {
+    "name": "NVS settings survive restart",
+    "passed": true,
+    "response": "Xpre-Enyx uptime=2 s heap=193516 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=ADVERTISING | mood=curious sensitivity=3.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: MUTED (sound must be checked by listening)\n"
+  },
+  {
+    "name": "defaults restored",
+    "passed": true,
+    "response": "Mood auto\nSound ON\nSensitivity 2.0 m/s2\nXpre-Enyx uptime=5 s heap=193516 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=ADVERTISING | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n"
+  }
+]

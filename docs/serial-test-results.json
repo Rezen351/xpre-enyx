@@ -1,0 +1,116 @@
+{
+  "port": "COM15",
+  "results": [
+    {
+      "name": "help CRLF",
+      "passed": true,
+      "response": "Xpre-Enyx commands (115200 baud; Enter/LF/CRLF):\r\nhelp | status | stream on/off | test [all|oled|mpu|dht|audio|encoder|i2c|stop]\r\nmood auto|normal|curious|happy|surprised|love|sleepy|wink\r\nnotify <text> | sound on/off | beep | calibrate | sensitivity 0.5..8\r\nretry | menu | face | sleep | reboot\r\ntest: interactive diagnostic ~14 seconds; test stop cancels. Missing hardware never stops the app.\r\n"
+    },
+    {
+      "name": "status LF",
+      "passed": true,
+      "response": "Xpre-Enyx uptime=11 s heap=189124 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=CONNECTED | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n"
+    },
+    {
+      "name": "unknown command",
+      "passed": true,
+      "response": "ERR unknown command/arguments; type help\r\n"
+    },
+    {
+      "name": "overflow rejected and parser recovers",
+      "passed": true,
+      "response": "ERR command too long; discarded\r\nXpre-Enyx uptime=12 s heap=189124 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=CONNECTED | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n"
+    },
+    {
+      "name": "backspace and CR",
+      "passed": true,
+      "response": "Xpre-Enyx uptime=13 s heap=189124 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=CONNECTED | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n"
+    },
+    {
+      "name": "invalid mood",
+      "passed": true,
+      "response": "ERR invalid mood; type help\r\n"
+    },
+    {
+      "name": "invalid sensitivity",
+      "passed": true,
+      "response": "ERR sensitivity must be 0.5..8\r\n"
+    },
+    {
+      "name": "menu entry",
+      "passed": true,
+      "response": "Menu open\r\n"
+    },
+    {
+      "name": "return to face",
+      "passed": true,
+      "response": "Face mode\r\n"
+    },
+    {
+      "name": "notification",
+      "passed": true,
+      "response": "NOTIFICATION: Integration test\n"
+    },
+    {
+      "name": "sensor test starts",
+      "passed": true,
+      "response": "TEST START dht | SDA=8 SCL=7 | levels SDA=1 SCL=1\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n"
+    },
+    {
+      "name": "console responsive during test",
+      "passed": true,
+      "response": "Xpre-Enyx uptime=18 s heap=189084 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=CONNECTED | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n"
+    },
+    {
+      "name": "test cancellation",
+      "passed": true,
+      "response": "TEST stopped; normal operation resumed.\r\n"
+    },
+    {
+      "name": "unknown test rejected",
+      "passed": true,
+      "response": "ERR test target: all|oled|mpu|dht|audio|encoder|i2c|stop\r\n"
+    },
+    {
+      "name": "full diagnostic completes",
+      "passed": true,
+      "response": "TEST START all | SDA=8 SCL=7 | levels SDA=1 SCL=1\nOLED communication/init: FAIL / UNAVAILABLE. Panel must be checked visually.\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\nOLED pattern: FULL ON -> OFF -> GRID -> CHECKER (1 second each).\r\nE (23614) BT_BTM: Device not found\r\n\r\nAudio test: listen for two tones. Rotate encoder and click within 10 seconds.\r\nEncoder delta=0 clicks=0 (zero means unverified, not proof of damage).\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\nTEST END all: ACK/readings do not verify OLED pixels or audible output.\r\n"
+    },
+    {
+      "name": "status after diagnostics",
+      "passed": true,
+      "response": "Xpre-Enyx uptime=36 s heap=191720 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=ADVERTISING | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n"
+    },
+    {
+      "name": "stream on",
+      "passed": true,
+      "response": "Stream ON\nXpre-Enyx uptime=37 s heap=191720 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=ADVERTISING | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\nXpre-Enyx uptime=39 s heap=191720 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=ADVERTISING | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n"
+    },
+    {
+      "name": "stream off",
+      "passed": true,
+      "response": "Stream OFF\n"
+    }
+  ],
+  "transcript": [
+    "",
+    "Xpre-Enyx commands (115200 baud; Enter/LF/CRLF):\r\nhelp | status | stream on/off | test [all|oled|mpu|dht|audio|encoder|i2c|stop]\r\nmood auto|normal|curious|happy|surprised|love|sleepy|wink\r\nnotify <text> | sound on/off | beep | calibrate | sensitivity 0.5..8\r\nretry | menu | face | sleep | reboot\r\ntest: interactive diagnostic ~14 seconds; test stop cancels. Missing hardware never stops the app.\r\n",
+    "Xpre-Enyx uptime=11 s heap=189124 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=CONNECTED | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n",
+    "ERR unknown command/arguments; type help\r\n",
+    "ERR command too long; discarded\r\nXpre-Enyx uptime=12 s heap=189124 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=CONNECTED | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n",
+    "Xpre-Enyx uptime=13 s heap=189124 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=CONNECTED | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n",
+    "ERR invalid mood; type help\r\n",
+    "ERR sensitivity must be 0.5..8\r\n",
+    "Menu open\r\n",
+    "Face mode\r\n",
+    "NOTIFICATION: Integration test\n",
+    "TEST START dht | SDA=8 SCL=7 | levels SDA=1 SCL=1\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n",
+    "Xpre-Enyx uptime=18 s heap=189084 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=CONNECTED | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n",
+    "TEST stopped; normal operation resumed.\r\n",
+    "ERR test target: all|oled|mpu|dht|audio|encoder|i2c|stop\r\n",
+    "TEST START all | SDA=8 SCL=7 | levels SDA=1 SCL=1\nOLED communication/init: FAIL / UNAVAILABLE. Panel must be checked visually.\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\nOLED pattern: FULL ON -> OFF -> GRID -> CHECKER (1 second each).\r\nE (23614) BT_BTM: Device not found\r\n\r\nAudio test: listen for two tones. Rotate encoder and click within 10 seconds.\r\nEncoder delta=0 clicks=0 (zero means unverified, not proof of damage).\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\nTEST END all: ACK/readings do not verify OLED pixels or audible output.\r\n",
+    "Xpre-Enyx uptime=36 s heap=191720 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=ADVERTISING | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n",
+    "Stream ON\nXpre-Enyx uptime=37 s heap=191720 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=ADVERTISING | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\nXpre-Enyx uptime=39 s heap=191720 bytes | OLED 0x3C: UNAVAILABLE\nI2C SDA=8 SCL=7 levels=1/1 | BLE=ADVERTISING | mood=auto sensitivity=2.0\nMPU6050: UNAVAILABLE address=0x68 motion=0.00 m/s2\nDHT11: NO VALID READING (GPIO5)\nEncoder: position=0 clicks=0 button=UP (manual verification required)\nAudio GPIO6: ON (sound must be checked by listening)\n",
+    "Stream OFF\n"
+  ]
+}

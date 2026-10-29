@@ -1,0 +1,9 @@
+{
+  "environment": "esp32-c3-devkitm-1",
+  "upload_port": "COM15",
+  "size_bytes": 1099472,
+  "sha256": "58ac54bba797b824a3b0145c8fb722b4d3f34d7cd4e18eb54c2dbf3daf60e7fe",
+  "static_ram_bytes": 39748,
+  "application_flash_bytes": 1061768,
+  "upload_verified": true
+}

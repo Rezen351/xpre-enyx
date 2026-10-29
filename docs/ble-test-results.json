@@ -1,0 +1,32 @@
+[
+  {
+    "name": "advertising",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "name": "connect",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "name": "GATT service",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "name": "write + notification acknowledgement",
+    "passed": true,
+    "detail": "['notification received']"
+  },
+  {
+    "name": "oversized message ignored",
+    "passed": true,
+    "detail": ""
+  },
+  {
+    "name": "advertising after disconnect",
+    "passed": true,
+    "detail": ""
+  }
+]
